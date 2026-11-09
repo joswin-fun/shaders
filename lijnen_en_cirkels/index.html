@@ -1,0 +1,39 @@
+<html>
+<script type="text/javascript" src="../lib/GlslCanvas.js"></script>
+<body>
+<canvas class="glslCanvas" data-fragment="
+ 
+#ifdef GL_ES
+precision mediump float;
+#endif
+uniform vec2 u_resolution;
+uniform float u_time;
+ 
+vec3 palette(float t) {
+vec3 a = vec3(0.50,0.50,0.50);
+vec3 b = vec3(0.50,0.50,0.50);
+vec3 c = vec3(1.00,1.00,1.00);
+vec3 d = vec3(0.00,0.10,0.20);
+return a + b*tan(7.000*(c*t+d));
+}
+ 
+void main() {
+    vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution.xy)/u_resolution.y;
+    st = fract(st*0.7)-0.500;
+    st = fract(st*1.500)-0.500;
+    vec3 colorH = palette(length(st.y)+u_time*0.190);
+    vec3 colorV = palette(length(st.x)+u_time*-0.070);
+    vec3 colorC1 = palette(length(st.xy)+u_time*-0.0904);
+    vec3 colorc2 = palette(length(st.xy)+u_time*0.068);
+    vec3 color = vec3(0.);
+    color = mix(color,colorH,1.100);
+    color = mix(color,colorV,0.588);
+    color = mix(color,colorC1,0.612);
+    color = mix(color,colorc2,0.612);
+ 
+    gl_FragColor = vec4(color,1.0);
+}
+"
+  width="1750" height="980"> </canvas>
+</body>
+</html>
