@@ -2,55 +2,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
-    <title>cirkels in polar system</title>
+    <title>titel van de shader</title>
     <script type="text/javascript" src="../lib/GlslCanvas.js"></script>
-    <style> body {overflow:hidden; padding: 0px; margin: 0px;} </style>
+   <style> body {overflow:hidden; padding: 0px; margin: 0px;} </style>
 <body>
 <canvas class="glslCanvas" data-fragment="
 
-#ifdef GL_ES 
-precision mediump float; 
-#endif 
-uniform vec2 u_resolution; 
-float pi = 3.14159265359; 
-uniform float u_time; 
+#ifdef GL_ES
+precision mediump float;
+#endif
+float pi = 3.14159265359;
+uniform vec2 u_resolution;
+uniform float u_time;
+vec3 palette(float t) {
+vec3 a = vec3(1.0,0.0,0.0);
+vec3 b = vec3(0.0,0.0,1.0);
+vec3 c = vec3(0.041,0.042,1.000);
+vec3 d = vec3(0.089,0.007,1.000);
+return a + b*cos(1.440*pi*(c*t+d));
+}
+void main() {
+vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution.xy)/u_resolution.y;
+vec2 st0 = st;
+st = fract(st*1.644)-0.5;
+// st = st*2.;
+vec3 finalColor = vec3(0.0);
  
-// de sdf functie voor een cirkel 
-float sdCircle(vec2 p, float r) {return length(p) -r;} 
- 
-//st_inGrid functie plaatst de pixelcoordinaten st in een grid 
-vec2 st_inGrid(vec2 st, float gridSize){ 
-   vec2 st_grid = fract (st * gridSize); 
-   return st_grid; 
-} 
-//st_toPolar functie plaatst de pixelcoordinaten st in een polar assenstelsel 
-vec2 st_toPolar(vec2 st, float time) { 
-   float d = length(st); 
-   float angle = atan(st.y, st.x); 
-   vec2 st_polar = vec2(0.25 / d-time * 0.25, angle / pi); 
-   return st_polar; 
-} 
- 
-void main() { 
-//vec2 st zijn de pixelcoordinaten st in een [-1,+1] Cartesian assenstelsel 
-    vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution.xy)/u_resolution.x; 
-//vec2 st_polar zijn de pixelcoordinaten st in een [-1,+1] polar assenstelsel 
-    vec2 st_polar = st_toPolar(st, -u_time); 
-    //van het polar coord stelsel wordt een 8x8 grid gemaakt 
-    vec2 st_polarGrid = st_inGrid(st_polar,4.0); 
-//De sdf cirkels in het polar grid stoppen 
-    float d = sdCircle(st_polarGrid-0.5,0.5); 
-    vec3 col = d <= 0.0 ? vec3(0.9,0.6,0.3): vec3(1.0,0.0,0.0); 
- 
-//Dit is het fun deel van de code 
-      col = col * (1.20 -exp(-4.0 * abs(d))); 
-  //  col = col * 0.8 + col * 0.2 * sin(50.0 * d); 
-  //  col = col * 0.8 + col * 4.0 * sin(20.0 * abs(d) -2.0 * u_time);
-  //  col = col * 0.8 + col * 1.0 * sin(50.0 * abs(d) -2.0 * u_time); 
- 
-   gl_FragColor = vec4(col, 1.0); 
+for (float i = 0.0; i < 2.; i++) {
+st = fract(st*1.220)-0.5;
+float d = abs(length(st) * log(length(st0)));
+vec3 col = palette(length(st0)+u_time*-0.5);
+d = sin(d*9.416+u_time)/20.;
+d = 0.02 / d;
+finalColor += col * d;
+}
+gl_FragColor = vec4(finalColor,1.0);
 }
 "
-   width="1750" height="980"> </canvas>
-  </body>
+width="1750" height="980"> </canvas> 
+    </body> 
 </html>
