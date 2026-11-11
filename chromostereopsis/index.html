@@ -1,19 +1,42 @@
-<html>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
-    <title>titel van de shader</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, maximum-scale=1"/>
+    <title>Chromostereopsis Shader</title>
     <script type="text/javascript" src="../lib/GlslCanvas.js"></script>
-   <style> body {overflow:hidden; padding: 0px; margin: 0px;} </style>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      .glslCanvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; /* tracks the visible viewport on mobile */
+  }
+    </style>
+  </head>
 <body>
-<canvas class="glslCanvas" data-fragment="
-
+<canvas 
+ class="glslCanvas"
+  data-fullscreen="true"
+ data-fragment="
 #ifdef GL_ES
 precision mediump float;
 #endif
 float pi = 3.14159265359;
 uniform vec2 u_resolution;
 uniform float u_time;
+ 
 vec3 palette(float t) {
 vec3 a = vec3(1.0,0.0,0.0);
 vec3 b = vec3(0.0,0.0,1.0);
@@ -28,6 +51,7 @@ st = fract(st*1.644)-0.5;
 // st = st*2.;
 vec3 finalColor = vec3(0.0);
  
+
 for (float i = 0.0; i < 2.; i++) {
 st = fract(st*1.220)-0.5;
 float d = abs(length(st) * log(length(st0)));
@@ -39,6 +63,6 @@ finalColor += col * d;
 gl_FragColor = vec4(finalColor,1.0);
 }
 "
-width="1750" height="980"> </canvas> 
-    </body> 
+    ></canvas>
+  </body>
 </html>
