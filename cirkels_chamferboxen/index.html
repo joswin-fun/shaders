@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html lang="en">
+ <head>
+   <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta
+     name="viewport"
+     content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, maximum-scale=1"/>
+   <title>Shaders met chamferboxen</title>
+   <script type="text/javascript" src="../lib/GlslCanvas.js"></script>
+   <style>
+     html, body {
+       margin: 0;
+       padding: 0;
+       width: 100%;
+       height: 100%;
+       overflow: hidden;
+       background: #000;
+     }
+     .glslCanvas {
+   display: block;
+   width: 100vw;
+   height: 100vh;
+   height: 100dvh; /* tracks the visible viewport on mobile */
+ }
+   </style>
+ </head>
+<body>
+<canvas
+class="glslCanvas"
+ data-fullscreen="true"
+data-fragment="
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 u_resolution;
+uniform float u_time;
+
+vec3 palette(float t) {
+vec3 a = vec3(0.500,0.333,0.469);
+vec3 b = vec3(0.447,0.500,0.385);
+vec3 c = vec3(0.705,0.545,1.000);
+vec3 d = vec3(0.062,0.557,0.137);
+return a + b*tan(7.520*(c*t+d));
+}
+
+// de sd functie voor een chamferbox
+float sdChamferBox(vec2 p, vec2 b, float chamfer)
+{
+    p = abs(p) - b;
+    p = (p.y>p.x) ? p.yx : p.xy;
+    p.y += chamfer;
+    const float k = 1.0-sqrt(2.0);
+    if( p.y<0.0 && p.y+p.x*k<0.0 )
+        return p.x;
+    if( p.x<p.y )
+        return (p.x+p.y)*sqrt(0.5);
+    return length(p);
+}
+
+void main() {
+    vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.x;
+    st = fract(st*1.5)-0.500;
+    vec2 box = vec2(0.940,0.980);
+    float chamfer = 0.564;
+    float d = sdChamferBox( st.xy, box, chamfer );
+//  st = fract(st*0.860)-0.5;
+ // st = fract(st*0.2)-0.5;
+
+    vec3 col = d > 0.0 ? vec3(0.326,0.561,0.900) : vec3(0.510,1.000,0.430);
+    col = col * 5.00 * -tan(10.0 * abs(d) -0.2 * u_time);
+ // col = col * -0.912 * tan(10.0 * abs(d) /1000.0 * u_time);
+    vec3 colx  = palette(length(st.x) +u_time*-0.0904);
+    vec3 coly  = palette(length(st.y) +u_time* 0.254);
+    vec3 colC1 = palette(length(st.xy)+u_time*-0.0904);
+    vec3 colC2 = palette(length(st.xy)+u_time* 0.068);
+    col = mix(col,colC1, 0.5);
+    col = mix(col,colC2, 0.5);
+    col = mix(col, colx, 0.5);
+    col = mix(col, coly, 0.5);
+    gl_FragColor = vec4(col,1.0);
+}
+"
+    ></canvas>
+  </body>
+</html>
