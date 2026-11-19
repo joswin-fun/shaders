@@ -8,3 +8,4 @@ De shaders draaien op het internet dankzij de lib GlslCanvas.js<br>ontwikkeld do
 |2 |Polar coordinaten systeem met cirkels|https://www.flevopink.nl/shaders/cirkels_in_polarSystem/polar2/|
 |3 |Kleurenpalette met lijnen en cirkels|https://www.flevopink.nl/shaders/kleurenpal_cirkel_rechthFS/|
 |4 |Kleurenpalette met cirkels en chamferboxen|https://www.flevopink.nl/shaders/kleurenpalette_chamferboxen/|
+|5 |Kleurenpalette met length() in fract() en extra fract()|https://www.flevopink.nl/shaders/palet_length_in_fract/indexB.html|
